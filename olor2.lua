@@ -3098,3 +3098,22 @@ yes()
 plr.CharacterAdded:Connect(yes)
 getgenv().Loaded = true
 end)
+
+Section:NewButton("No Fall", "THINK", function()
+    local mt = getrawmetatable(game)
+local old = mt.__namecall
+setreadonly(mt, false)
+mt.__namecall =
+   newcclosure(
+   function(remote, ...)
+       args = {...}
+       method = tostring(getnamecallmethod())
+       if method == "FireServer" and tostring(remote) == "FallDamage" and tonumber(args[1]) then
+           args[1] = 1
+           return old(remote, unpack(args))
+       end
+       return old(remote, ...)
+   end
+)
+setreadonly(mt, true)
+end)
